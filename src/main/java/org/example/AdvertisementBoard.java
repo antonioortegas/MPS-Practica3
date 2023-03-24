@@ -46,6 +46,9 @@ public class AdvertisementBoard {
     public void publish(Advertisement advertisement,
                         AdvertiserDatabase advertiserDatabase,
                         PaymentGateway paymentGateway) {
+        if(numberOfPublishedAdvertisements()==20){
+            throw new AdvertisementBoardException("Exception");
+        }
         if (advertisement.advertiser.equals(BOARD_OWNER))
             advertisementList.add(advertisement);
         else {

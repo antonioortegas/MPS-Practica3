@@ -108,6 +108,22 @@ class AdvertisementBoardTest {
         int actualValue = board.numberOfPublishedAdvertisements();
         assertEquals(expectedValue, actualValue);
     }
+
+    @Test
+    @DisplayName("Rise an exception when trying to add an advertisement to a full board")
+        void shouldTryingToPublishANewAddRiseAnExceptionWhenBoardIsFull(){
+            Mockito.when(db.advertiserIsRegistered("Tim O'Theo")).thenReturn(true);
+            Mockito.when(gateway.advertiserHasFunds("Tim O'Theo")).thenReturn(true);
+            /*Spy implementation, so we can use methods from the original AdvertisementBoard class, but override the
+            result from the function "NumberOfPublishedAdvertisements" to return a full board (20) to implement the test
+             */
+            AdvertisementBoard fullBoard = Mockito.spy(board);
+            Mockito.when(fullBoard.numberOfPublishedAdvertisements()).thenReturn(20);
+
+            advertisement = new Advertisement("Title", "text", "Tim O'Theo");
+
+            assertThrows(AdvertisementBoardException.class, () -> fullBoard.publish(advertisement, db, gateway));
+    }
 }
 
 /*
