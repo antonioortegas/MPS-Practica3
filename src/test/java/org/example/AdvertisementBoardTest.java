@@ -92,6 +92,22 @@ class AdvertisementBoardTest {
 
         assertEquals(expectedAdvertisement, actualAdvertisement);
     }
+
+    @Test
+    @DisplayName("Trying to publish an existing ad does not make a NEW ad and no charges are applied")
+    void shouldTryingToPublishAnExistingAdvertisementNotMakeANewAdOrApplyCharges(){
+        int expectedValue = 2;
+        advertisement = new Advertisement("Title", "text", "MPS");
+        Mockito.when(db.advertiserIsRegistered("MPS")).thenReturn(true);
+        Mockito.when(gateway.advertiserHasFunds("MPS")).thenReturn(true);
+        board.publish(advertisement, db, gateway);
+
+        board.publish(advertisement, db, gateway);
+
+        verify(gateway, times(1)).chargeAdvertiser("MPS"); //Charge is only called once, not twice
+        int actualValue = board.numberOfPublishedAdvertisements();
+        assertEquals(expectedValue, actualValue);
+    }
 }
 
 /*

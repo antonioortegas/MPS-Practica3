@@ -49,8 +49,10 @@ public class AdvertisementBoard {
         if (advertisement.advertiser.equals(BOARD_OWNER))
             advertisementList.add(advertisement);
         else {
+            Optional<Advertisement> ad = findByTitle(advertisement.title);
             if (advertiserDatabase.advertiserIsRegistered(advertisement.advertiser) &&
-                    paymentGateway.advertiserHasFunds(advertisement.advertiser)) {
+                    paymentGateway.advertiserHasFunds(advertisement.advertiser)
+                    && ad.isEmpty()) {
                 advertisementList.add(advertisement);
                 paymentGateway.chargeAdvertiser(advertisement.advertiser);
             }
